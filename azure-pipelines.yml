@@ -12,7 +12,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  azureServiceConnection: 'charlash555'     # your service connection name
+  azureServiceConnection: 'noname'     # your service connection name
   webAppName: 'YOUR-APP-SERVICE-NAME'
   artifactName: 'drop'
   packagePath: '$(Build.ArtifactStagingDirectory)/site.zip'
