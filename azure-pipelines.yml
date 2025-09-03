@@ -9,7 +9,8 @@ trigger:
       - master   # change if your branch is different
 
 pool:
-  vmImage: ubuntu-latest
+  name: default
+
 
 variables:
   azureServiceConnection: 'noname'     # your service connection name
