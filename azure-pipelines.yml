@@ -9,7 +9,8 @@ trigger:
       - master   # change if your branch is different
 
 pool:
-  name: default
+  name: Default
+
 
 
 variables:
