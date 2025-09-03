@@ -1,0 +1,51 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches: 
+    include:
+      - master   # change if your branch is different
+
+pool:
+  name: default
+
+
+variables:
+  azureServiceConnection: 'noname'     # your service connection name
+  webAppName: 'YOUR-APP-SERVICE-NAME'
+  artifactName: 'drop'
+  packagePath: '$(Build.ArtifactStagingDirectory)/site.zip'
+
+stages:
+- stage: Build
+  jobs:
+  - job: build
+    steps:
+    - script: |
+        echo "Zipping static HTML files"
+        zip -r "$(packagePath)" .
+      displayName: Package static site
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(artifactName)'
+
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+  - deployment: deployWeb
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: '$(artifactName)'
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              appName: '$(webAppName)'
+              package: '$(Pipeline.Workspace)/$(artifactName)/site.zip'
+              appType: webAppLinux   # for Linux App Service
